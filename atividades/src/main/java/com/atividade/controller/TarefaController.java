@@ -1,7 +1,7 @@
-package com.atividade1.controller;
+package com.atividade.controller;
 
-import com.atividade1.model.Tarefa;
-import com.atividade1.repository.TarefaRepository;
+import com.atividade.model.Tarefa;
+import com.atividade.repository.TarefaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

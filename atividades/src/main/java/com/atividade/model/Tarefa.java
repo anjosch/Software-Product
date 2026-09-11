@@ -1,4 +1,4 @@
-package com.atividade1.model;
+package com.atividade.model;
 
 import jakarta.persistence.*;
 

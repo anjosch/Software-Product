@@ -1,6 +1,6 @@
-package com.atividade1.repository;
+package com.atividade.repository;
 
-import com.atividade1.model.Tarefa;
+import com.atividade.model.Tarefa;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TarefaRepository extends JpaRepository<Tarefa, Long> {
