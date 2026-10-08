@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Minhas Tarefas (AC1)</title>
+    <title>Minhas Tarefas</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 40px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
@@ -12,7 +12,6 @@
 <body>
 
 <h2>Cadastrar Nova Tarefa</h2>
-<!-- Formulário que envia os dados para a rota /salvar do Controlador -->
 <form action="/salvar" method="POST">
     <label>Título:</label><br>
     <input type="text" name="titulo" required><br><br>
@@ -32,14 +31,19 @@
         <th>ID</th>
         <th>Título</th>
         <th>Descrição</th>
+        <th>Ações</th>
     </tr>
     </thead>
     <tbody>
-    <!-- Laço de repetição (for) do Thymeleaf para listar os dados do banco -->
+
     <tr th:each="tarefa : ${tarefas}">
         <td th:text="${tarefa.id}"></td>
         <td th:text="${tarefa.titulo}"></td>
         <td th:text="${tarefa.descricao}"></td>
+        <td>
+            <a th:href="@{/editar/{id}(id=${tarefa.id})}">Editar</a> |
+            <a th:href="@{/excluir/{id}(id=${tarefa.id})}" onclick="return confirm('Tem certeza que deseja excluir esta tarefa?');">Excluir</a>
+        </td>
     </tr>
     </tbody>
 </table>
