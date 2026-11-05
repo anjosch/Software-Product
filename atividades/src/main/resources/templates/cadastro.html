@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Usuário (AC3)</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+    </style>
+</head>
+<body>
+<h2>Cadastrar Novo Usuário</h2>
+<form action="/cadastrarUsuario" method="POST">
+    <label>Nome:</label><br>
+    <input type="text" name="nome" required><br><br>
+
+    <label>E-mail:</label><br>
+    <input type="email" name="email" required><br><br>
+
+    <label>Senha:</label><br>
+    <input type="password" name="senha" required><br><br>
+
+    <button type="submit">Cadastrar</button>
+</form>
+<br>
+<a href="/login">Já tem uma conta? Faça Login</a>
+</body>
+</html>

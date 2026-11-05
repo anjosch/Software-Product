@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login (AC3)</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .erro { color: red; font-weight: bold; }
+        .sucesso { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+<h2>Login no Sistema de Tarefas</h2>
+
+<p th:if="${param.cadastrado}" class="sucesso">Usuário cadastrado com sucesso! Faça seu login.</p>
+<p th:if="${erro}" th:text="${erro}" class="erro"></p>
+
+<form action="/efetuarLogin" method="POST">
+    <label>E-mail:</label><br>
+    <input type="email" name="email" required><br><br>
+
+    <label>Senha:</label><br>
+    <input type="password" name="senha" required><br><br>
+
+    <button type="submit">Entrar</button>
+</form>
+<br>
+<a href="/cadastro">Não tem conta? Cadastre-se aqui</a>
+</body>
+</html>
