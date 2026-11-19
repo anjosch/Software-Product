@@ -4,13 +4,15 @@ import jakarta.persistence.*;
 
 @Entity
 public class Tarefa {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String titulo;
     private String descricao;
+    private boolean concluida = false; // Novo campo: false = Pendente, true = Concluída
 
-    // Relacionamento: Muitas tarefas pertencem a Um usuário
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
@@ -24,6 +26,9 @@ public class Tarefa {
 
     public String getDescricao() { return descricao; }
     public void setDescricao(String descricao) { this.descricao = descricao; }
+
+    public boolean isConcluida() { return concluida; }
+    public void setConcluida(boolean concluida) { this.concluida = concluida; }
 
     public Usuario getUsuario() { return usuario; }
     public void setUsuario(Usuario usuario) { this.usuario = usuario; }

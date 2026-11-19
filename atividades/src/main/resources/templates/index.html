@@ -2,18 +2,52 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Minhas Tarefas</title>
+    <title>Minhas Tarefas — Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body { font-family: Arial, sans-serif; margin: 40px; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; background: #f4f4f4; padding: 10px 15px; margin-bottom: 20px; }
+        .dashboard { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; margin-bottom: 24px; }
+        .cards { display: flex; gap: 12px; }
+        .card { border: 1px solid #ccc; padding: 14px 18px; border-radius: 6px; min-width: 120px; }
+        .card strong { display: block; font-size: 22px; margin-top: 4px; }
+        .grafico-box { width: 220px; height: 220px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+        .concluida { text-decoration: line-through; color: #666; }
     </style>
 </head>
 <body>
-<div style="display: flex; justify-content: space-between; align-items: center; background: #f4f4f4; padding: 10px; margin-bottom: 20px;">
+
+<div class="topbar">
     <span>Bem-vindo(a), <strong th:text="${session.usuarioLogado.nome}">Usuário</strong>!</span>
     <a href="/logout" style="color: red; text-decoration: none; font-weight: bold;">Sair (Logout)</a>
 </div>
+
+<h2>Dashboard de Tarefas</h2>
+<div class="dashboard">
+    <div class="cards">
+        <div class="card">
+            <span>Total</span>
+            <strong th:text="${totalTarefas}">0</strong>
+        </div>
+        <div class="card">
+            <span>Concluídas</span>
+            <strong th:text="${totalConcluidas}">0</strong>
+        </div>
+        <div class="card">
+            <span>Pendentes</span>
+            <strong th:text="${totalPendentes}">0</strong>
+        </div>
+    </div>
+
+    <div class="grafico-box">
+        <canvas id="graficoTarefas"></canvas>
+    </div>
+</div>
+
+<hr>
+
 <h2>Cadastrar Nova Tarefa</h2>
 <form action="/salvar" method="POST">
     <label>Título:</label><br>
@@ -34,22 +68,47 @@
         <th>ID</th>
         <th>Título</th>
         <th>Descrição</th>
+        <th>Status</th>
         <th>Ações</th>
     </tr>
     </thead>
     <tbody>
-
     <tr th:each="tarefa : ${tarefas}">
         <td th:text="${tarefa.id}"></td>
-        <td th:text="${tarefa.titulo}"></td>
-        <td th:text="${tarefa.descricao}"></td>
+        <td th:text="${tarefa.titulo}" th:classappend="${tarefa.concluida} ? 'concluida' : ''"></td>
+        <td th:text="${tarefa.descricao}" th:classappend="${tarefa.concluida} ? 'concluida' : ''"></td>
+        <td th:text="${tarefa.concluida} ? 'Concluída' : 'Pendente'"></td>
         <td>
+            <a th:href="@{/concluir/{id}(id=${tarefa.id})}"
+               th:text="${tarefa.concluida} ? 'Reabrir' : 'Concluir'"></a> |
             <a th:href="@{/editar/{id}(id=${tarefa.id})}">Editar</a> |
-            <a th:href="@{/excluir/{id}(id=${tarefa.id})}" onclick="return confirm('Tem certeza que deseja excluir esta tarefa?');">Excluir</a>
+            <a th:href="@{/excluir/{id}(id=${tarefa.id})}"
+               onclick="return confirm('Tem certeza que deseja excluir esta tarefa?');">Excluir</a>
         </td>
     </tr>
     </tbody>
 </table>
+
+<script th:inline="javascript">
+    const concluidas = [[${totalConcluidas}]];
+    const pendentes = [[${totalPendentes}]];
+
+    const ctx = document.getElementById('graficoTarefas');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Concluídas', 'Pendentes'],
+            datasets: [{
+                data: [concluidas, pendentes],
+                backgroundColor: ['#2e7d32', '#ed6c02']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+</script>
 
 </body>
 </html>

@@ -24,39 +24,85 @@ public class TarefaController {
         if (usuarioLogado == null) {
             return "redirect:/login";
         }
-        model.addAttribute("tarefas", repository.findByUsuario(usuarioLogado));
+
+        java.util.List<Tarefa> tarefasDoUsuario = repository.findByUsuario(usuarioLogado);
+        long totalConcluidas = tarefasDoUsuario.stream().filter(Tarefa::isConcluida).count();
+        long totalPendentes = tarefasDoUsuario.size() - totalConcluidas;
+
+        model.addAttribute("tarefas", tarefasDoUsuario);
+        model.addAttribute("totalTarefas", tarefasDoUsuario.size());
+        model.addAttribute("totalConcluidas", totalConcluidas);
+        model.addAttribute("totalPendentes", totalPendentes);
         return "index";
     }
 
-    // Salva ou atualiza a tarefa vinculando ao usuário logado
     @PostMapping("/salvar")
     public String salvar(Tarefa tarefa, HttpSession session) {
         Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
         if (usuarioLogado == null) {
             return "redirect:/login";
         }
-        // Amarra a tarefa ao usuário antes de salvar no MySQL
+
+        // Se for edição de uma tarefa existente, valida posse e mantém o status 'concluida'
+        if (tarefa.getId() != null) {
+            Tarefa existente = repository.findById(tarefa.getId()).orElse(null);
+            if (existente == null || existente.getUsuario() == null
+                    || !existente.getUsuario().getId().equals(usuarioLogado.getId())) {
+                return "redirect:/";
+            }
+            tarefa.setConcluida(existente.isConcluida());
+        }
+
         tarefa.setUsuario(usuarioLogado);
         repository.save(tarefa);
         return "redirect:/";
     }
 
-    @GetMapping("/excluir/{id}")
-    public String excluir(@PathVariable Long id, HttpSession session) {
-        if (session.getAttribute("usuarioLogado") == null) {
-            return "redirect:/login";
-        }
-        repository.deleteById(id);
-        return "redirect:/";
-    }
-
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Long id, Model model, HttpSession session) {
-        if (session.getAttribute("usuarioLogado") == null) {
+        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
+        if (usuarioLogado == null) {
             return "redirect:/login";
         }
+
         Tarefa tarefa = repository.findById(id).orElse(null);
+        if (tarefa == null || tarefa.getUsuario() == null
+                || !tarefa.getUsuario().getId().equals(usuarioLogado.getId())) {
+            return "redirect:/";
+        }
+
         model.addAttribute("tarefa", tarefa);
         return "editar";
+    }
+
+    @GetMapping("/excluir/{id}")
+    public String excluir(@PathVariable Long id, HttpSession session) {
+        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
+        if (usuarioLogado == null) {
+            return "redirect:/login";
+        }
+
+        Tarefa tarefa = repository.findById(id).orElse(null);
+        if (tarefa != null && tarefa.getUsuario() != null
+                && tarefa.getUsuario().getId().equals(usuarioLogado.getId())) {
+            repository.deleteById(id);
+        }
+        return "redirect:/";
+    }
+    // Alterna o status da tarefa entre Pendente (false) e Concluída (true)
+    @GetMapping("/concluir/{id}")
+    public String concluir(@PathVariable Long id, HttpSession session) {
+        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
+        if (usuarioLogado == null) {
+            return "redirect:/login";
+        }
+
+        Tarefa tarefa = repository.findById(id).orElse(null);
+        if (tarefa != null && tarefa.getUsuario() != null
+                && tarefa.getUsuario().getId().equals(usuarioLogado.getId())) {
+            tarefa.setConcluida(!tarefa.isConcluida());
+            repository.save(tarefa);
+        }
+        return "redirect:/";
     }
 }
