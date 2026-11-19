@@ -1,60 +1,81 @@
-# 📝 Sistema de Gerenciamento de Tarefas (To-Do List)
+# Sistema de Gerenciamento de Tarefas (To-Do List)
 
-Projeto acadêmico de **Desenvolvimento de Software** construído com **Java e Spring Boot**, focado no gerenciamento de tarefas diárias.
+Projeto acadêmico desenvolvido para a disciplina **Software Product: Analysis, Specification, Project & Implementation** (Curso de Análise e Desenvolvimento de Sistemas - EAD, Faculdade Impacta).
 
-Este projeto segue a metodologia ágil, sendo desenvolvido de forma incremental com entregas de novas funcionalidades a cada Sprint (Atividades Contínuas), integrando sempre Front-end, Back-end e Banco de Dados.
-
-## 🎯 Objetivo do Projeto
-
-Desenvolver uma aplicação web full-stack funcional que permita aos usuários registrar, acompanhar e gerenciar suas atividades, garantindo a persistência das informações em um banco de dados relacional.
-
-## 💻 Tecnologias Utilizadas
-
-* **Linguagem:** Java
-* **Framework:** Spring Boot (Spring Web, Spring Data JPA)
-* **Front-end:** HTML5, CSS3 e Thymeleaf (Renderização Server-side)
-* **Banco de Dados:** MySQL
-* **Controle de Versão:** Git e GitHub
-* **Gestão Ágil:** Trello
-
-## 🚀 AC1 — Cadastro e Listagem (Core da Aplicação)
-
-A primeira entrega (Sprint 1) estabelece a arquitetura base do sistema e entrega o núcleo do produto operando de ponta a ponta.
-
-### Funcionalidades Implementadas:
-* Criação da entidade `Tarefa` no banco de dados.
-* Interface gráfica para inserção de novas tarefas (Título e Descrição).
-* Rota no Back-end para receber os dados do formulário e persisti-los no MySQL.
-* Listagem dinâmica das tarefas salvas diretamente na tela inicial.
-
-### 🎥 Vídeo de Apresentação (AC1)
-> [Assistir à demonstração da AC1 no Loom]
-
-## 📋 Gestão do Projeto (Kanban)
-O acompanhamento das Sprints, backlogs e tarefas em andamento é feito publicamente através do nosso quadro ágil.
-> [Acessar o Trello do Projeto](https://trello.com/b/GCYxq0fc/software-product-analysis-specification-project-implementation-202602-ead-ads-5a)
-
-## ⚙️ Como executar o projeto localmente
-
-1. Clone este repositório: `git clone https://github.com/anjosch/Software-Product.git`
-2. Crie um banco de dados no MySQL local chamado `atividade1`.
-3. Configure o usuário e senha do banco no arquivo `src/main/resources/application.properties`.
-4. Execute a classe principal `MainApplication.java` na sua IDE (IntelliJ/Eclipse).
-5. Acesse a aplicação no navegador através do endereço: `http://localhost:8080`
-
-## 🔒 Nota sobre Dados
-*Atendendo às diretrizes da disciplina, **nenhum dado real, corporativo ou sensível** é utilizado neste projeto. Todas as tarefas cadastradas nos vídeos de demonstração e nos testes de banco de dados são estritamente fictícias e criadas apenas para fins acadêmicos.*
-
-## 🛣️ Roadmap de Evolução (Sprints)
-
-* [x] **AC1** — Estrutura base, Cadastro e Listagem de Tarefas (Integração Front, Back e BD)
-* [ ] **AC2** — Implementação das funções de Edição (Update) e Exclusão (Delete)
-* [ ] **AC3** — Sistema de Autenticação e Login (Spring Security)
-* [ ] **Prova Final** — Dashboard com métricas e gráficos de tarefas concluídas vs. pendentes
+O sistema foi construído de forma incremental seguindo metodologias ágeis (Kanban no Trello), garantindo integração completa entre **Front-end**, **Back-end** e **Banco de Dados** em todas as entregas.
 
 ---
 
-## 👨‍💻 Desenvolvedor
+## Tecnologias Utilizadas
 
-**Gabriel Anjos de Brito Chaves**
-*Projeto desenvolvido para a disciplina de Software Product: Analysis, Specification, Project & Implementation.*
+* **Linguagem:** Java 17+
+* **Back-end:** Spring Boot (Spring Web, Spring Data JPA)
+* **Front-end:** HTML5, CSS3, Thymeleaf e Chart.js
+* **Banco de Dados:** MySQL
+* **Controle de Versão & Gestão Ágil:** Git/GitHub e Trello
+
+---
+
+## Evolução do Produto (Entregas)
+
+### AC1 — Cadastro e Listagem de Tarefas
+* Criação da entidade `Tarefa`, repositório JPA (`TarefaRepository`) e controlador (`TarefaController`).
+* Implementação do formulário de criação e listagem dinâmica em tela com persistência no MySQL.
+
+### AC2 — Edição e Exclusão de Tarefas
+* Implementação das rotas de atualização (`/editar/{id}`) e exclusão (`/excluir/{id}`) com confirmação via interface.
+* Persistência de `UPDATE` e `DELETE` refletida em tempo real no banco de dados.
+
+### AC3 — Cadastro, Autenticação e Isolamento Multiusuário
+* Criação da entidade `Usuario` e controle de autenticação em sessão via `HttpSession` (`/cadastro`, `/login`, `/logout`).
+* Relacionamento `@ManyToOne` entre `Tarefa` e `Usuario` (`usuario_id`), garantindo que cada usuário visualize, crie, edite e exclua exclusivamente suas próprias tarefas.
+
+### Entrega Final — Status de Conclusão e Dashboard de Métricas
+* Adição do atributo `concluida` (`boolean`) na entidade `Tarefa` e rota `/concluir/{id}` para alternar tarefas entre **Pendente** e **Concluída**.
+* Implementação de **Dashboard dinâmico** na tela principal exibindo cards de resumo (**Total**, **Concluídas** e **Pendentes**) e gráfico interativo (Chart.js) calculados a partir das tarefas do usuário logado.
+* Blindagem de autorização nas operações de edição, exclusão e conclusão por proprietário da tarefa.
+
+---
+
+## Estrutura Básica do Projeto
+
+```text
+src/main/java/com/atividade/
+├── controller/
+│   ├── TarefaController.java
+│   └── UsuarioController.java
+├── model/
+│   ├── Tarefa.java
+│   └── Usuario.java
+└── repository/
+    ├── TarefaRepository.java
+    └── UsuarioRepository.java
+
+src/main/resources/
+├── templates/
+│   ├── cadastro.html
+│   ├── editar.html
+│   ├── index.html
+│   └── login.html
+└── application.properties
+```
+
+---
+
+## Como Executar Localmente
+
+1. Crie um banco de dados no MySQL (ex.: `CREATE DATABASE atividade1;`).
+2. Configure suas credenciais locais do MySQL em `src/main/resources/application.properties` (não versionar senhas reais em repositórios públicos).
+3. Execute a aplicação Spring Boot pelo IntelliJ IDEA ou via Maven (`./mvnw spring-boot:run`).
+4. Acesse no navegador: `http://localhost:8080`.
+
+---
+
+## Links de Gestão e Acompanhamento
+
+* **Quadro Ágil (Trello):** [Acessar Board](https://trello.com/b/GCYxq0fc/software-product-analysis-specification-project-implementation-202602-ead-ads-5a)
+* **Repositório (GitHub):** [anjosch/Software-Product](https://github.com/anjosch/Software-Product.git)
+
+---
+
+**Autor:** Gabriel Anjos de Brito Chaves — RA: 2302391
